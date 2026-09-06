@@ -35,6 +35,16 @@ A full-stack financial technology application built with a **Django REST Framewo
   - Updated application title in `index.html` to **GuLLack**.
   - Configured Light/Dark mode toggling.
 
+### 4. 🎨 DAY-2: UI & Frontend Features
+- Created core layout components: **DashboardHeader**, **Sidebar**, and a **ThemeToggleButton**.
+- Developed authentication pages: **Login** and **Signup**.
+- Built main dashboard views including the **Overview** page.
+- Implemented user action screens for **Beneficiaries**, **KYC**, and **Notifications**.
+- Created comprehensive **Savings** module (Goal List, Detail view, and New Goal creation).
+- Built **Wallet** and **Transfer** modules for funding and sending money.
+- Designed **Transactions** screens to list and view detailed transaction history.
+- Set up routing structures including a stub for `ProtectedRoute`.
+
 ---
 
 ## 📂 Project Structure
