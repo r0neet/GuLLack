@@ -45,6 +45,13 @@ A full-stack financial technology application built with a **Django REST Framewo
 - Designed **Transactions** screens to list and view detailed transaction history.
 - Set up routing structures including a stub for `ProtectedRoute`.
 
+### 5. 🔐 DAY-3: Backend Authentication API
+- Implemented **UserRegisterSerializer** and **UserSerializer** to handle data validation.
+- Built **RegisterView** and **LoginView** with automated **JWT token generation**.
+- Implemented **LogoutView** with secure **Token Blacklisting**.
+- Engineered a custom **CookieTokenRefreshView** to manage 14-day refresh tokens securely via `httpOnly` cookies, preventing client-side interception.
+- Handled React Router nested protected routes blocking unauthenticated access to the dashboard.
+
 ---
 
 ## 📂 Project Structure

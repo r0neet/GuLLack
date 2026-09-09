@@ -42,7 +42,7 @@ export const routes: RouteObject[] = [
     },
 
     {
-        // element: <ProtectedRoute />,
+        element: <ProtectedRoute />,
         children: [
             {
                 path: "/dashboard",
