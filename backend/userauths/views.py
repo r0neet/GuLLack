@@ -1,8 +1,7 @@
-from django.contrib.auth import authenticate  #Built - in helper to check email and password and return to user    
-from django.conf import settings #Access to project setting 
-from django.http import HttpRequest  #Type hint for Django request objects
+from django.contrib.auth import authenticate  #Built - in helper to check email and password and return to user
+from django.conf import settings #Access to project setting
 
-from rest_framework.views import APIView  # base class for DRF views 
+from rest_framework.views import APIView  # base class for DRF views
 from rest_framework.response import Response # Standard DRF Http responce wrapper
 from rest_framework import status # handy HTTp status codes (200,400, etc.)
 from rest_framework.permissions import IsAuthenticated # Permission class required a valid login
@@ -11,27 +10,26 @@ from rest_framework_simplejwt.views import TokenRefreshView as SimpleJWTTokenRef
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer # Serializer for token refresh
 from rest_framework_simplejwt.tokens import RefreshToken # Token class for token operations (creating/handling JWT refresh)
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken # Exception classes for token operations (bad/expired tokens)
-from rest_framework import status, permissions  # status, permission 
 
 from userauths import serializers as userauths_serializers # the app's serializers (aliased for clarity)
 from userauths import models as userauths_models # the app's models (aliased for clarity)
-# from core import models as core_models    # Example: other app models (not used below but imported )
 
 
-class RegisterAPIView(APIView):
-    def post(self, request): 
+class RegisterView(APIView):
+    def post(self, request):
         serializer = userauths_serializers.UserRegisterSerializer(data=request.data) # call the serializer to grab the data sent from the frontend
-        if serializer.is_valid(raise_exception=True): # if it is valid 
+
+        if serializer.is_valid(raise_exception=True): # if it is valid
             user = serializer.save() # create the user in the database
 
-            refresh = RefreshToken.for_user(user) # create a refresh token for the user so that he can stay logged in for 7 days 
+            refresh = RefreshToken.for_user(user) # create a refresh token for the user so that he can stay logged in for 7 days
 
-            Response_data ={
-                'access': str(serializer.access_token), # send access token to the front end so that he can use it to access protected routes
-                'refresh': str(refresh), # send refresh token to the front end so that he can use it to refresh his token when it expires
-                'message': "Registration successful", # send response to the front end when successful
+            response_data = {
+                'access': str(refresh.access_token), # send access token to the front end so that he can use it to access protected routes
+                'message': "User registered and logged in successfully" # send response to the front end when successful
             }
-            response = status.HTTP_201_CREATED # return 201 if the data is valid
+
+            response = Response(response_data, status=status.HTTP_201_CREATED) # return 201 if the data is valid
 
             response.set_cookie(
                 key="refresh",
@@ -41,14 +39,12 @@ class RegisterAPIView(APIView):
                 samesite=settings.SIMPLE_JWT.get('AUTH_COOKIE_SAMESITE', 'Lax'),  # Restrict cross-site sending
                 secure=settings.SIMPLE_JWT.get('AUTH_COOKIE_SECURE', not settings.DEBUG),  # HTTPS-only in prod
             )
-            return response
 
-                
-                
-        else:
-            return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST) # return 400 if the data is invalid
-             # send error message to the front end
+            return response
         
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # return 400 if the data is invalid
+    
+
 class LoginView(APIView):
     def post(self, request):
         email = request.data.get("email")
@@ -78,8 +74,9 @@ class LoginView(APIView):
             )
 
             return response
-        else:
-            return Response({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        return Response({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class LogoutView(APIView):
     def post(self, request):
@@ -87,16 +84,17 @@ class LogoutView(APIView):
 
         if not refresh_token:
             return Response({"error": "Refresh token not found"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         try:
             token = RefreshToken(refresh_token)
-            token.blacklist()   # blacklist the token   
-            response = Response ({"message":"logout successful"},status=status.HTTP_200_OK)
+            token.blacklist() # blacklist the token   
+            response = Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
             response.delete_cookie("refresh")
 
-            return response 
+            return response
         except (TokenError, InvalidToken):
-            return Response({"error": "Invalid or expiered refresh token"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Invalid or expired refresh token"}, status=status.HTTP_400_BAD_REQUEST)
+            
 
 class UserView(APIView):
     permission_classes = [IsAuthenticated]
@@ -105,6 +103,8 @@ class UserView(APIView):
         serializer = userauths_serializers.UserSerializer(request.user) # serializes the user model into JSON format
         return Response(serializer.data, status=status.HTTP_200_OK) # it can properly return the user data to the frontend
     
+
+
 class CookieTokenRefreshSerializer(TokenRefreshSerializer):
     """
     This custom serializer reads the refresh token from the httpOnly cookie.
@@ -122,6 +122,7 @@ class CookieTokenRefreshSerializer(TokenRefreshSerializer):
         
         # Delegate the rest (signature checks, expiry, rotation logic) to the parent serializer
         return super().validate(attrs)
+
 
 class CookieTokenRefreshView(SimpleJWTTokenRefreshView):
     """
