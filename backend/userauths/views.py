@@ -104,7 +104,8 @@ class UserView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK) # it can properly return the user data to the frontend
     
 
-
+# Below CookieRefreshSerializers and CookieRefreshView are used to refresh the access token when it expires using only cookie authentication method
+# can be copied from django rest framework simplejwt official documentation
 class CookieTokenRefreshSerializer(TokenRefreshSerializer):
     """
     This custom serializer reads the refresh token from the httpOnly cookie.

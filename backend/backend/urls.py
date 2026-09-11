@@ -24,7 +24,7 @@ api_base = "api/v1/"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(f"{api_base}auth/", include("userauths.urls")),
+    path(f"{api_base}user/", include("userauths.urls")),
 ]
 
 
