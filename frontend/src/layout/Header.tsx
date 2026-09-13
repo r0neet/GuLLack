@@ -1,9 +1,10 @@
 // src/layout/Header.tsx
 // UI-only: no hooks, no state, no onClick handlers, no auth/theme logic.
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Sun, Moon } from "lucide-react";
+import { toast } from "sonner";
 import { useTheme } from "@/hooks/useTheme";
+import { useAuth } from "@/hooks/useAuth";
 
 const NAV_ITEMS = [
     { label: "Home", to: "/" },
@@ -16,6 +17,18 @@ const CTA = { label: "Get Started", to: "/login" };
 
 export default function Header() {
     const { theme, toggleTheme } = useTheme();
+    const { logout, isLoggedIn} = useAuth();
+    const navigate  = useNavigate();  //a hook from react-router-dom that allows us to navigate programmatically
+    const handleLogout = async () => {
+
+       try{
+        await logout();
+        toast.success("Logged out successfully");
+        navigate("/login");
+       } catch(error){
+        console.log(error);
+       }
+    };
 
     return (
         <div className="sticky top-0 z-50 bg-white text-gray-900 shadow-[0_1px_0_0_rgba(17,24,39,0.06)] dark:bg-[#0b0b0c] dark:text-white">
@@ -42,10 +55,14 @@ export default function Header() {
                             {/* <span className="hidden sm:inline">{theme === "dark" ? "Light" : "Dark"}</span> */}
                         </button>
 
-                        {/* Static CTA (no auth switching) */}
+                        {isLoggedIn ?(
+                        <button onClick={handleLogout} className="hidden md:inline-flex items-center justify-center rounded-2xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 dark:bg-white dark:text-black dark:focus-visible:ring-white/15">
+                        Log out </button>
+                        ):(
                         <Link to={CTA.to} className="hidden md:inline-flex items-center justify-center rounded-2xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 dark:bg-white dark:text-black dark:focus-visible:ring-white/15">
                             {CTA.label}
                         </Link>
+                        )}
 
                         {/* Mobile menu button — decorative only */}
                         <button aria-label="Toggle navigation" className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 shadow-sm transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 md:hidden dark:border-white/10 dark:bg-[#101113] dark:text-white dark:hover:bg-[#131416] dark:focus-visible:ring-white/15">

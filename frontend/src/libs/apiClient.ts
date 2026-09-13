@@ -24,10 +24,10 @@ const apiClient = axios.create({
 });
 
 // Variable to store the current access token in memory
-let accessToken: any = null;
+let accessToken: string | null = null;
 
 // Function to update the access token when a user logs in or refreshes it
-export const setAccessToken = (token: any) => {
+export const setAccessToken = (token: string | null) => {
     accessToken = token;
     // If a token exists, attach it as the default Authorization header
     if (token) {

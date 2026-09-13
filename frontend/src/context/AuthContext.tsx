@@ -1,25 +1,29 @@
 import React, { createContext, useEffect, useState, ReactNode } from 'react';
 import apiClient, {setAccessToken} from "@/libs/apiClient";
 
-import { User } from "@/types/api";
-
-interface AuthPayload {  // Define the structure of the payload for authentication
+interface RegisterPayload {  // Data accepted by the registration endpoint
   email: string;
   password: string;
-  username: string;
+  username?: string;
+}
+
+interface LoginPayload {  // Data accepted by the login endpoint
+  email: string;
+  password: string;
 }
 
 interface User{  // Define the structure of the User object
     email: string;
-    fullname: string;
+    username: string;
+    completed_kyc?: boolean;
 }
-interface AuthContextType {   // Define the structure of the AuthContext
+export interface AuthContextType {   // Define the structure of the AuthContext
     user: User | null; 
     loading: boolean;
     isLoggedIn: boolean;
     completedKyc: boolean;
-    register: (payload: AuthPayload) => Promise<void>;
-    login: (payload: AuthPayload) => Promise<void>;
+    register: (payload: RegisterPayload) => Promise<void>;
+    login: (payload: LoginPayload) => Promise<void>;
     logout: () => Promise<void>;
 }
 
@@ -49,10 +53,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
                 const userReponse = await apiClient.get<User>("user/profile/"); //fetch the user profile data
                 setUser(userReponse?.data); 
-            } catch (error) {
+            } catch {
                 setUser(null); //if there is an error, set the user to null
                 setAccessToken(null); //remove the access token from the apiClient
-                console.log(error);
             } finally {
                 setLoading(false);  //set loading to false after the request is completed
             }
@@ -66,39 +69,29 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         setUser(res.data);
     };
     //function to register a new user
-    const register = async (payload: AuthPayload) => {
-        try {
-            const { data } = await apiClient.post<{ access: string }>("user/auth/register/", payload);
-            setAccessToken(data.access);
-            await fetchCurrentUser();
-        } catch (error) {
-            throw error;
-        }
+    const register = async (payload: RegisterPayload) => {
+        const { data } = await apiClient.post<{ access: string }>("user/auth/register/", payload);
+        setAccessToken(data.access);
+        await fetchCurrentUser();
     };
      
-    const login = async (payload: AuthPayload) => {
-        try {
-            const { data } = await apiClient.post<{ access: string }>("user/auth/login/", payload);
-            setAccessToken(data.access);
-            await fetchCurrentUser();
-        } catch (error) {
-            throw error;
-        }
+    const login = async (payload: LoginPayload) => {
+        const { data } = await apiClient.post<{ access: string }>("user/auth/login/", payload);
+        setAccessToken(data.access);
+        await fetchCurrentUser();
     };
 
     const logout = async () => {
         try {
             await apiClient.post("user/auth/logout/");
-        } catch (error) {
-            throw error;
         } finally {
             setAccessToken(null);
             setUser(null);
         }
     };
 
-    let isLoggedIn = !!user;
-    let completedKyc = user?.completed_kyc ? true : false;
+    const isLoggedIn = !!user;
+    const completedKyc = user?.completed_kyc ? true : false;
 
     return <AuthContext.Provider value={{ user, loading, isLoggedIn, completedKyc, register, login, logout }}>{children}</AuthContext.Provider>;
 };
