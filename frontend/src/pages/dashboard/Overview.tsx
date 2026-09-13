@@ -1,9 +1,8 @@
 // src/pages/dashboard/Overview.tsx
 import React from "react";
 import { Link } from "react-router-dom";
-import { Menu, Wallet as WalletIcon, Send, Shield, Users, Bell, Settings, ChartBarBig, ArrowRight } from "lucide-react";
-import { DesktopSidebar, MobileSidebar, SidebarTrigger } from "@/layout/Sidebar";
-import ThemeToggleButton from "@/components/ThemeToggleButton";
+import { Wallet as WalletIcon, Shield, Users, ChartBarBig, ArrowRight } from "lucide-react";
+import { DesktopSidebar, MobileSidebar } from "@/layout/Sidebar";
 import DashboardHeader from "@/layout/DashboardHeader";
 
 type Tx = {

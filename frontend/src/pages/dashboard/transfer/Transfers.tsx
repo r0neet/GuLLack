@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { DesktopSidebar, MobileSidebar } from "@/layout/Sidebar";
 import DashboardHeader from "@/layout/DashboardHeader";
-import { ArrowLeft, Send, Filter, Search, Calendar, BadgeCheck, XCircle, Clock, ExternalLink } from "lucide-react";
+import { ArrowLeft, Send, Search, Calendar, ExternalLink } from "lucide-react";
 
 type Tx = {
     id: string;

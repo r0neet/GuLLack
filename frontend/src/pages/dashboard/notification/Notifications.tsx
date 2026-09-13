@@ -1,6 +1,6 @@
 import { DesktopSidebar, MobileSidebar } from "@/layout/Sidebar";
 import DashboardHeader from "@/layout/DashboardHeader";
-import { Bell, CheckCircle2, Clock, XCircle, ArrowRight, Check } from "lucide-react";
+import { CheckCircle2, Clock, XCircle, ArrowRight, Check } from "lucide-react";
 
 const Notifications = () => {
     return (

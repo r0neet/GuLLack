@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Wallet, CreditCard, Calendar, Hash, UserRound, Info } from "lucide-react";
+import { ArrowLeft, Wallet, CreditCard, Calendar, Hash, UserRound } from "lucide-react";
 import { DesktopSidebar, MobileSidebar } from "@/layout/Sidebar";
 import DashboardHeader from "@/layout/DashboardHeader";
 

@@ -1,7 +1,7 @@
 // src/pages/TransactionDetail.tsx
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, CheckCircle2, Clock, XCircle, Wallet as WalletIcon, User2, Hash, Link as LinkIcon, CalendarClock, Shield, Copy } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Wallet as WalletIcon, User2, Hash, Link as LinkIcon, CalendarClock, Shield, Copy } from "lucide-react";
 import { DesktopSidebar, MobileSidebar } from "@/layout/Sidebar";
 import DashboardHeader from "@/layout/DashboardHeader";
 

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { DesktopSidebar, MobileSidebar } from "@/layout/Sidebar";
 import DashboardHeader from "@/layout/DashboardHeader";
-import { UserPlus, Trash2, User2, Mail, Hash, ShieldCheck, X, Plus } from "lucide-react";
+import { UserPlus, Trash2, Hash, ShieldCheck, X, Plus } from "lucide-react";
 
 const Beneficiaries = () => {
     return (
