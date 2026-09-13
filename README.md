@@ -52,6 +52,17 @@ A full-stack financial technology application built with a **Django REST Framewo
 - Engineered a custom **CookieTokenRefreshView** to manage 14-day refresh tokens securely via `httpOnly` cookies, preventing client-side interception.
 - Handled React Router nested protected routes blocking unauthenticated access to the dashboard.
 
+### 6. ✅ DAY-4: Complete Authentication Flow & Build Cleanup
+- Connected the React app to `AuthProvider`, with a reusable `useAuth` hook for login, registration, logout, and session state.
+- Made the **Login** and **Signup** forms functional: client-side validation, loading states, clear error messages, and redirecting users back to protected pages after authentication.
+- Updated `ProtectedRoute` to wait for the refresh-cookie session check instead of relying on `localStorage`.
+- Connected the header logout button to the backend logout endpoint and cleared the local authentication state afterward.
+- Updated the registration serializer to accept an optional username, falling back to the email prefix when no username is provided.
+- Removed unused frontend imports so strict TypeScript compilation succeeds.
+- Verified the frontend production build (`npm run build`) and linting (`npm run lint`, with one non-blocking Fast Refresh warning).
+
+**Day 4 summary:** Authentication now has a complete frontend-to-backend path: register or log in, receive and refresh JWT credentials through secure cookies, load the current user, protect dashboard routes, and log out safely.
+
 ---
 
 ## 📂 Project Structure
