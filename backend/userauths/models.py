@@ -12,3 +12,30 @@ class User(AbstractUser):
     def __str__(self):
         return self.email   
 
+class KYC(models.Model):
+    class VerificationStatus(models.TextChoices):
+        UNVERIFIED = "UNVERIFIED", "Unverified"
+        PENDING = "PENDING", "Pending"
+        VERIFIED = "VERIFIED", "Verified"
+        REJECTED = "REJECTED", "Rejected"
+
+    class IDtype(models.TextChoices):
+        PASSPORT = "PASSPORT", "International Passport"
+        NATIONAL_ID = "NATIONAL_ID", "National ID Card"
+        DRIVER_LICENSE = "DRIVER_LICENSE", "Driver's License"
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="kyc_profile")
+    full_name = models.CharField(max_length=255)
+    date_of_birth = models.DateField(null=True, blank=True)
+    id_type = models.CharField(max_length=20, choices=IDtype.choices, default=IDtype.NATIONAL_ID)
+    id_image = models.CharField(max_length=500, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"KYC for {self.user.email}"
+
+    class Meta:
+        verbose_name = "KYC Record"
+        verbose_name_plural = "KYC Records"
+        ordering = ['-created_at']
