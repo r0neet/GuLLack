@@ -7,8 +7,8 @@ urlpatterns = [
     path('auth/logout/', views.LogoutView.as_view(), name='logout'),
     path('profile/', views.UserView.as_view(), name='user'),
 
-    #path('kyc-profile/', views.KYCView.as_view()),
-    #path('kyc/', views.KYCCreateView.as_view()),
+    path('kyc-profile/', views.KYCView.as_view()),
+    path('kyc/', views.KYCCreateView.as_view()),
 
     
     # Use our custom refresh view that handles cookies

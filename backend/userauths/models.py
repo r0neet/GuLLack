@@ -27,6 +27,8 @@ class KYC(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="kyc_profile")
     full_name = models.CharField(max_length=255)
     date_of_birth = models.DateField(null=True, blank=True)
+    verification_status = models.CharField(max_length=20, choices=VerificationStatus.choices, default=VerificationStatus.UNVERIFIED)
+    
     id_type = models.CharField(max_length=20, choices=IDtype.choices, default=IDtype.NATIONAL_ID)
     id_image = models.CharField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
