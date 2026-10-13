@@ -63,6 +63,14 @@ A full-stack financial technology application built with a **Django REST Framewo
 
 **Day 4 summary:** Authentication now has a complete frontend-to-backend path: register or log in, receive and refresh JWT credentials through secure cookies, load the current user, protect dashboard routes, and log out safely.
 
+### 7. 🪪 DAY-5: KYC and File Handling
+- Added a dedicated `core` Django application and registered its API routes under `/api/v1/core/`.
+- Added a multipart file-upload endpoint at `POST /api/v1/core/upload/`, which stores an uploaded file with Django's configured default storage and returns its absolute URL.
+- Extended the React KYC screen with state for profile data, form fields, upload/submission status, and user feedback.
+- The KYC page loads an existing profile, pre-fills its form fields when present, uploads an identity document before submission, and prevents a duplicate submission after KYC data exists.
+
+**Day 5 summary:** The KYC workflow now has a frontend form state layer and a backend file-upload route, allowing an identity-document file to be uploaded and its resulting URL to be included with KYC data.
+
 ---
 
 ## 📂 Project Structure

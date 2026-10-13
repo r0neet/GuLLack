@@ -3,8 +3,114 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, User2, Calendar, IdCard, UploadCloud, ShieldCheck, Info } from "lucide-react";
 import { DesktopSidebar, MobileSidebar } from "@/layout/Sidebar";
 import DashboardHeader from "@/layout/DashboardHeader";
+import { uploadFile } from "@/libs/users";
+import {createKyc, kycProfile} from "@/libs/users";
 
 const KYC: React.FC = () => {
+    const [kyc, setKyc] = React.useState<any | null>(null);   // State for KYC profile data
+    const [loading, setLoading] = React.useState(true);
+
+    // State for form fields
+    const [fullName, setFullName] = React.useState("");
+    const [dob, setDob] = React.useState("");
+    const [idType, setIdType] = React.useState("NATIONAL_ID");
+    const [idImageUrl, setIdImageUrl] = React.useState("");
+
+    const [uploading, setUploading] = React.useState(false);
+    const [submitting, setSubmitting] = React.useState(false);
+    const [successMsg, setSuccessMsg] = React.useState("");
+    const [errorMsg, setErrorMsg] = React.useState("");
+
+    React.useEffect(() => {
+        const fetchKycPRofile = async () => {
+            try {
+                const { data } = await kycProfile();
+                setKyc(data);
+
+                if (data) {
+                    setFullName(data?.full_name || "");
+                    if (data?.date_of_birth) {
+                        const d = String(data?.date_of_birth);
+                        setDob(d.length > 10 ? d.slice(0, 10) : d);
+                    }
+                    setIdType(data?.id_type || "NATIONAL_ID");
+                    setIdImageUrl(data?.id_image || "");
+                }
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchKycPRofile();
+    }, []);
+
+    const alreadySubmitted = Boolean(kyc);
+
+    async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];  // storing the first file from the input in event
+        if (!file) return;
+
+        setErrorMsg("");
+        setSuccessMsg("");
+        setUploading(true);
+
+        try {
+            const url = await uploadFile(file);
+            setIdImageUrl(url);   // Update the state with the uploaded file URL
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setUploading(false);
+        }
+    }
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        if (alreadySubmitted) return;
+        setErrorMsg("");
+        setSuccessMsg("");
+        setUploading(true);
+
+        if (!fullName.trim()) {
+            setSubmitting(false);
+            setErrorMsg("Please enter your full name");
+            return;
+        }
+
+        if (!dob) {
+            setSubmitting(false);
+            setErrorMsg("Please select your date of birth");
+            return;
+        }
+
+        try {
+            const payload = {
+                full_name: fullName.trim(),
+                date_of_birth: dob,
+                id_type: idType,
+                id_image: idImageUrl,
+            };
+
+            const resp = await createKyc(payload);
+            const msg = resp?.data?.message;
+            setSuccessMsg(msg);
+            toast.success("KYC updated");
+
+            const saved = resp?.data?.kyc || payload;
+            setKyc({
+                ...saved,
+                verification_status: saved?.verification_status || "UNVERIFIED",
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
+    const status = kyc?.verification_status || "UNVERIFIED";
     return (
         <div className="min-h-screen bg-white text-gray-900 antialiased dark:bg-[#0a0a0a] dark:text-white">
             <div className="flex">
